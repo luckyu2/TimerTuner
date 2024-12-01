@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TimerTuner</title>
+    <link id="favicon" rel="shortcut icon" href="logo.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="timer-container">
+    <div id="name-input">
+        <input type="text" id="timer-name" placeholder="给定时器取个名字">
+        <button id="add-name">Add</button>
+    </div>
+    <div id="timer-name-display"></div>
+    <div id="timer-display">00:00:00</div>
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+    <div> 
+    </div>
+    <div class="time-input">
+        <h3>设置定时器</h3>
+        <select id="hours">
+            <option value="0">0</option>
+            <!-- Add options for 0-23 -->
+            <!-- ... -->
+        </select>
+        <label for="hours">时</label>
+       
+        <select id="minutes">
+            <option value="0">10</option>
+            <!-- Add options for 0-59 -->
+            <!-- ... -->
+        </select>
+        <label for="minutes">分</label>
+     
+        <select id="seconds">
+            <option value="0">0</option>
+            <!-- Add options for 0-59 -->
+            <!-- ... -->
+        </select>
+        <label for="seconds">秒</label>
+    </div>
+    <div class="controls">
+        <button id="start" title="开始"><svg t="1733038941544" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1485" width="200" height="200"><path d="M256.079818 160.365384 256.079818 863.633592 808.649815 511.983627Z" p-id="1486" fill="#707070"></path></svg></button>
+        <button id="pause" title="暂停"><svg t="1733039243620" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2571" width="200" height="200"><path d="M128 106.858667C128 94.976 137.621333 85.333333 149.12 85.333333h85.76c11.648 0 21.12 9.6 21.12 21.525334V917.12c0 11.882667-9.621333 21.525333-21.12 21.525333H149.12A21.290667 21.290667 0 0 1 128 917.141333V106.88z m640 0c0-11.882667 9.621333-21.525333 21.12-21.525334h85.76c11.648 0 21.12 9.6 21.12 21.525334V917.12c0 11.882667-9.621333 21.525333-21.12 21.525333h-85.76a21.290667 21.290667 0 0 1-21.12-21.525333V106.88z" fill="#707070" p-id="2572"></path></svg></button>
+        <button id="reset" title="重置"><svg t="1733039314365" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3606" width="200" height="200"><path d="M716.8 290.133333c-110.933333-102.4-281.6-106.666667-396.8-12.8S170.666667 537.6 247.466667 665.6c59.733333 106.666667 179.2 166.4 302.933333 149.333333s221.866667-102.4 256-221.866666c8.533333-34.133333 42.666667-51.2 76.8-42.666667 34.133333 8.533333 51.2 42.666667 42.666667 76.8-68.266667 226.133333-302.933333 354.133333-524.8 290.133333C174.933333 853.333333 42.666667 618.666667 106.666667 392.533333c42.666667-145.066667 153.6-256 298.666666-298.666666s298.666667 0 405.333334 102.4l81.066666-81.066667c8.533333-8.533333 21.333333-12.8 34.133334-8.533333 4.266667 12.8 12.8 21.333333 12.8 34.133333v264.533333c0 17.066667-12.8 29.866667-29.866667 29.866667h-260.266667c-12.8 0-25.6-8.533333-29.866666-17.066667s0-25.6 8.533333-34.133333l89.6-93.866667z" p-id="3607" fill="#707070"></path></svg></button>
+    </div>
+    <footer class="footer"> 
+        <span class="line" >Source code on <a href="https://github.com/luckyu2/TimerTune/" >GitHub </a> &nbsp;&nbsp;</span>
+        <span class="line">请我喝一杯☕ <a href="https://sponsor.5202048.xyz/">Met Yu ✦</a> </span> 
+    </footer>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
