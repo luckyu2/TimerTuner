@@ -98,3 +98,23 @@ function resetTimer() {
 document.getElementById('start').addEventListener('click', startTimer);
 document.getElementById('pause').addEventListener('click', pauseTimer);
 document.getElementById('reset').addEventListener('click', resetTimer);
+
+// 检查系统主题偏好
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('current-theme').textContent = '当前主题：深色';
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const themeText = document.getElementById('current-theme');
+    
+    if (currentTheme === 'dark') {
+        html.removeAttribute('data-theme');
+        themeText.textContent = '当前主题：浅色';
+    } else {
+        html.setAttribute('data-theme', 'dark');
+        themeText.textContent = '当前主题：深色';
+    }
+}
