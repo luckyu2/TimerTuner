@@ -1,108 +1,152 @@
-let timerInterval;
-let timeLeft = 0;
-let isRunning = false;
-let timerName = "";
-// 播放警报音的函数
-function playAlarm() {
-const audio = new Audio('alarm.mp3'); // 确保你有名为'alarm.mp3'的音频文件
-audio.play();
-}
-
-// 添加定时器名称
-document.getElementById('add-name').addEventListener('click', () => {
-    timerName = document.getElementById('timer-name').value || "No Name";
-    document.getElementById('timer-name-display').innerText = timerName;
-    document.getElementById('timer-name-display').style.font ="bold 24px arial,serif";
-    document.getElementById('name-input').style.display = 'none';
-});
-
-// 重置定时器名称
-document.getElementById('timer-name-display').addEventListener('click', () => {
-    document.getElementById('name-input').style.display = 'block';
-    document.getElementById('timer-name-display').innerText = '';
-});
-
-// 生成选择项
-function populateDropdowns() {
-    for (let i = 0; i < 24; i++) {
-        document.getElementById('hours').innerHTML += `<option value="${i}">${i}</option>`;
+// 定时器类
+class Timer {
+    constructor(id) {
+        this.id = id;
+        this.timerInterval = null;
+        this.timeLeft = 0;
+        this.isRunning = false;
+        this.timerName = "";
+        this.createTimerElement();
+        this.initializeEvents();
     }
-    for (let i = 0; i < 60; i++) {
-        document.getElementById('minutes').innerHTML += `<option value="${i}">${i}</option>`;
-        document.getElementById('seconds').innerHTML += `<option value="${i}">${i}</option>`;
+
+    createTimerElement() {
+        const timerHTML = `
+            <div class="timer-container" id="timer-${this.id}">
+                <div class="name-input">
+                    <input type="text" class="timer-name" placeholder="这里输入名字">
+                    <button class="add-name">OK</button>
+                </div>
+                <div class="timer-name-display"></div>
+                <div class="timer-display">00:00:00</div>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="time-input">
+                    <h3>设置定时器</h3>
+                    <select class="hours">
+                        ${this.generateOptions(24)}
+                    </select>
+                    <label>时</label>
+                    <select class="minutes">
+                        ${this.generateOptions(60)}
+                    </select>
+                    <label>分</label>
+                    <select class="seconds">
+                        ${this.generateOptions(60)}
+                    </select>
+                    <label>秒</label>
+                </div>
+                <div class="controls">
+                    <button class="start">开始</button>
+                    <button class="pause">暂停</button>
+                    <button class="reset">重置</button>
+                    <button class="delete">删除</button>
+                </div>
+            </div>
+        `;
+        document.getElementById('timers-container').insertAdjacentHTML('beforeend', timerHTML);
+        this.element = document.getElementById(`timer-${this.id}`);
     }
-}
-populateDropdowns();
 
-function updateTimerDisplay() {
-    let hours = Math.floor(timeLeft / 3600);
-    let minutes = Math.floor((timeLeft % 3600) / 60);
-    let seconds = timeLeft % 60;
-    let progress = 0;
+    generateOptions(max) {
+        let options = '';
+        for (let i = 0; i < max; i++) {
+            options += `<option value="${i}">${i}</option>`;
+        }
+        return options;
+    }
 
-    document.getElementById('timer-display').textContent =
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; 
-    // 更新进度条
-    let totalTime = parseInt(document.getElementById('hours').value) * 3600 + 
-                    parseInt(document.getElementById('minutes').value) * 60 + 
-                    parseInt(document.getElementById('seconds').value);
-    progress = (totalTime - timeLeft) / totalTime * 100;
-    document.getElementById('progress').style.width = `${progress}%`;
-    document.getElementById('progress-bar').style.display = 'block'; 
-}
+    initializeEvents() {
+        // 添加名称
+        this.element.querySelector('.add-name').addEventListener('click', () => {
+            this.timerName = this.element.querySelector('.timer-name').value || "未命名";
+            this.element.querySelector('.timer-name-display').innerText = this.timerName;
+            this.element.querySelector('.name-input').style.display = 'none';
+        });
 
-function startTimer() {
-    if (!isRunning) {
-        let hours = parseInt(document.getElementById('hours').value) || 0;
-        let minutes = parseInt(document.getElementById('minutes').value) || 0;
-        let seconds = parseInt(document.getElementById('seconds').value) || 0;
+        // 开始按钮
+        this.element.querySelector('.start').addEventListener('click', () => this.startTimer());
 
-        timeLeft = hours * 3600 + minutes * 60 + seconds;
+        // 暂停按钮
+        this.element.querySelector('.pause').addEventListener('click', () => this.pauseTimer());
 
-        if (timeLeft > 0) {
-            isRunning = true;
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateTimerDisplay();
-                } else {
-                    clearInterval(timerInterval);
-                    isRunning = false;
-                    alert(`Time's up for ${timerName}!`);
-                    // 在这里添加播放警报音的代码
-                    playAlarm(); // 播放警报音
-                }
-            }, 1000);
+        // 重置按钮
+        this.element.querySelector('.reset').addEventListener('click', () => this.resetTimer());
+
+        // 删除按钮
+        this.element.querySelector('.delete').addEventListener('click', () => {
+            this.element.remove();
+        });
+    }
+
+    startTimer() {
+        if (!this.isRunning) {
+            const hours = parseInt(this.element.querySelector('.hours').value) || 0;
+            const minutes = parseInt(this.element.querySelector('.minutes').value) || 0;
+            const seconds = parseInt(this.element.querySelector('.seconds').value) || 0;
+
+            this.timeLeft = hours * 3600 + minutes * 60 + seconds;
+
+            if (this.timeLeft > 0) {
+                this.isRunning = true;
+                this.timerInterval = setInterval(() => {
+                    if (this.timeLeft > 0) {
+                        this.timeLeft--;
+                        this.updateTimerDisplay();
+                    } else {
+                        clearInterval(this.timerInterval);
+                        this.isRunning = false;
+                        alert(`${this.timerName} 时间结束啦！`);
+                        this.playAlarm();
+                    }
+                }, 1000);
+            }
         }
     }
-}
 
-function pauseTimer() {
-    if (isRunning) {
-        clearInterval(timerInterval);
-        isRunning = false;
+    pauseTimer() {
+        if (this.isRunning) {
+            clearInterval(this.timerInterval);
+            this.isRunning = false;
+        }
+    }
+
+    resetTimer() {
+        clearInterval(this.timerInterval);
+        this.isRunning = false;
+        this.timeLeft = 0;
+        this.element.querySelector('.hours').value = '0';
+        this.element.querySelector('.minutes').value = '0';
+        this.element.querySelector('.seconds').value = '0';
+        this.updateTimerDisplay();
+    }
+
+    updateTimerDisplay() {
+        const hours = Math.floor(this.timeLeft / 3600);
+        const minutes = Math.floor((this.timeLeft % 3600) / 60);
+        const seconds = this.timeLeft % 60;
+        
+        this.element.querySelector('.timer-display').textContent =
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    playAlarm() {
+        const audio = new Audio('alarm.mp3');
+        audio.play();
     }
 }
 
-function resetTimer() {
-    clearInterval(timerInterval);
-    isRunning = false;
-    timeLeft = 0;
-    document.getElementById('hours').value = '0';
-    document.getElementById('minutes').value = '0';
-    document.getElementById('seconds').value = '0';
-    updateTimerDisplay();
-    document.getElementById('progress-bar').style.display = 'none'; 
-}
-
-document.getElementById('start').addEventListener('click', startTimer);
-document.getElementById('pause').addEventListener('click', pauseTimer);
-document.getElementById('reset').addEventListener('click', resetTimer);
+// 初始化
+let timerCounter = 0;
+document.getElementById('create-timer').addEventListener('click', () => {
+    new Timer(timerCounter++);
+});
 
 // 检查系统主题偏好
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('current-theme').textContent = '当前主题：深色';
+    document.getElementById('current-theme').textContent = '暗';
 }
 
 function toggleTheme() {
@@ -112,9 +156,24 @@ function toggleTheme() {
     
     if (currentTheme === 'dark') {
         html.removeAttribute('data-theme');
-        themeText.textContent = '当前主题：浅色';
+        themeText.textContent = '浅';
     } else {
         html.setAttribute('data-theme', 'dark');
-        themeText.textContent = '当前主题：深色';
+        themeText.textContent = '暗';
     }
 }
+
+// 赞助链接
+// 添加点击事件处理
+document.getElementById('sponsor-link').addEventListener('mouseover', function(e) {
+    const qrcodeContainer = this.querySelector('.qrcode-container');
+    qrcodeContainer.classList.toggle('show-qrcode');
+    
+    // 点击其他地方关闭二维码
+    document.addEventListener('click', function closeQrcode(event) {
+        if (!event.target.closest('#sponsor-link')) {
+            qrcodeContainer.classList.remove('show-qrcode');
+            document.removeEventListener('click', closeQrcode);
+        }
+    });
+});

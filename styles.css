@@ -1,24 +1,25 @@
 :root {
     --background-color: #f5f5f5;
-    --text-color: #333333;
+    --text-color: #15202b;
 }
 
 [data-theme="dark"] {
-    --background-color: #333333;
-    --text-color: #ffffff;
+    --background-color: #15202b;
+    --text-color: #f5f5f5;
 }
 
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    transition: all 0.3s ease;
     min-height: 100vh;
     margin: 0;
     padding: 20px;
+    position: relative;
+    padding-bottom: 70px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
     font-family: Arial, sans-serif;
     overflow: hidden;
 }
@@ -32,18 +33,60 @@ button {
     color: var(--background-color);
 }
 
-.theme-switch button {
-    padding: 10px 20px;
+.theme-switch button {/* 调整padding使按钮更紧凑 */
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
-    background-color: var(--text-color);
-    color: var(--background-color);
-}
-#current-theme{
-    font: 0.5em sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    animation: breathing 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* 添加flex布局使SVG居中 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;      /* 设置固定宽度 */
+    height: 40px;     /* 设置固定高度，保持按钮为正方形 */
 }
 
+
+/* 调整theme-switch整体布局 */
+.theme-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;        /* 按钮和文字之间的间距 */
+}
+
+/* 呼吸灯动画关键帧 */
+@keyframes breathing {
+    0% {
+        box-shadow: 0 0 10px var(--text-color);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--text-color);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 0 10px var(--text-color);
+        transform: scale(1);
+    }
+}
+
+/* 悬停时可以选择暂停动画 */
+.theme-switch button:hover {
+    animation-play-state: paused;
+}
+
+#current-theme{
+    font: 0.8rem sans-serif;
+    font-weight: bold;
+}
+
+#create-timer-container{
+    margin: 6rem 0;
+}
 
 .timer-container {
     /* display: flex;
@@ -52,28 +95,28 @@ button {
     justify-content: center; */
     margin: 0 auto;
     text-align: center;
-    padding:30px 20px;
+    padding:50px 30px;
     border-radius: 2%;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    height: 40%;
-    width: 400px;
+    height: 400px;
+    width: 300px;
 }
-#name-input{
+.name-input{
     margin: 20px 0;
     font-size:0;
 }
-#name-input input{
+.name-input input{
     vertical-align: middle;
     padding:0;
     margin:0;
 }
-#name-input button{
+.name-input button{
     padding:5px 6px;
     margin:0 10px;
     vertical-align: middle;
     font-size: 1rem;
 }
-#name-input input{
+.name-input input{
     border: none;
     /* 可选的，移除焦点时边框颜色变化 */
     outline: none;
@@ -85,7 +128,7 @@ button {
     font: 1.2em sans-serif;
     margin: 30px 0;
 }
-#timer-name {
+.timer-name {
     width: 150px;
     margin-bottom: 10px;
     font-size: 16px;
@@ -95,14 +138,15 @@ button {
     padding: 10px;
     font-size: 1em;
 }
-#timer-display {
+.timer-display {
     font-size: 2em;
     margin: 20px 0;
 }
-#timer-name-display{
-    cursor:pointer;
+.timer-name-display{
+    font-size: 1.5rem;
+    font-weight: bold;
 }
-#progress-bar {
+.progress-bar {
     width: 100%;
     height: 15px;
     background: #fff;
@@ -110,7 +154,7 @@ button {
     margin-bottom: 10px;
     display: none;
 }
-#progress {
+.progress {
     height: 100%; 
     width: 0%;
     background: #4CAF50;
@@ -133,13 +177,17 @@ select {
     height: 20px;
     width: 20px;   
 }
-.footer{
-    position: relative;
-    bottom: 15px;
-    unicode-bidi: isolate;
-    padding: 24px 0;
-    margin-top: 24px;
-    border-top: 1px dashed var(--color-neutral-200);
+.footer {
+    position: fixed;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    gap: 10px;
 }
 @media screen and (min-width:320px) and (max-width:360px){
     body{
@@ -173,4 +221,103 @@ select {
     0% {background-position: 0% 50%;}
     50% {background-position: 100% 50%;}
     100% {background-position: 0% 50%;}
+}
+
+#create-timer {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#create-timer button{
+    margin: 30px 0 10px 0;
+}
+#timers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.timer-container {
+    width: 300px;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.delete {
+    background-color: #ff4444;
+    color: white;
+}
+
+a {
+    color: #6eb5ff;  /* 浅蓝色 */
+    text-decoration: none;  /* 移除下划线 */
+    transition: color 0.3s ease;  /* 添加颜色过渡效果 */
+}
+
+/* 鼠标悬停效果 */
+a:hover {
+    color: #3498db;  /* 悬停时颜色加深 */
+}
+
+/* 暗色主题下的链接颜色 */
+[data-theme="dark"] a {
+    color: #87cefa;  /* 暗色主题下使用更亮的浅蓝色 */
+}
+
+[data-theme="dark"] a:hover {
+    color: #00bfff;  /* 暗色主题下悬停颜色 */
+}
+
+/* 二维码容器 */
+.qrcode-container {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+/* 二维码项 */
+.qrcode-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.qrcode-item img {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 5px;  /* 图片和文字之间的间距 */
+}
+
+
+.qrcode-item span {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 容器改为flex布局 */
+.qrcode-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+/* 显示二维码的类 */
+.show-qrcode {
+    display: flex !important;
 }
