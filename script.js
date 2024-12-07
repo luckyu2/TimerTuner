@@ -169,7 +169,7 @@ class Timer {
 
     playAlarm() {
         const audio = new Audio('alarm.mp3');
-        // audio.play();
+        audio.play();
     }
 }
 
