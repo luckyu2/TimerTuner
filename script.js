@@ -85,20 +85,44 @@ class Timer {
             const hours = parseInt(this.element.querySelector('.hours').value) || 0;
             const minutes = parseInt(this.element.querySelector('.minutes').value) || 0;
             const seconds = parseInt(this.element.querySelector('.seconds').value) || 0;
-
-            this.timeLeft = hours * 3600 + minutes * 60 + seconds;
-
+            
+            // 创建电池背景
+            const batteryBg = document.createElement('div');
+            batteryBg.className = 'battery-background';
+            this.element.appendChild(batteryBg);
+            // 设置初始高度
+            batteryBg.style.height = '100%';
+            // 计算总时间（秒）
+            const totalTime = hours * 3600 + minutes * 60 + seconds;
+            this.timeLeft = totalTime;
+            console.log(this.timeLeft);
+            
             if (this.timeLeft > 0) {
                 this.isRunning = true;
                 this.timerInterval = setInterval(() => {
                     if (this.timeLeft > 0) {
+                        // 计算剩余百分比
+                        const percentage = Math.floor((this.timeLeft / totalTime) * 88);
+                        batteryBg.style.height = `${percentage}%`;
+                       
+                        // 当剩余时间少于20%时
+                        if (percentage < 20) {
+                            this.element.classList.add('battery-warning');
+                            batteryBg.classList.add('battery-low');
+                        }
+                 
                         this.timeLeft--;
                         this.updateTimerDisplay();
                     } else {
-                        clearInterval(this.timerInterval);
                         this.isRunning = false;
                         alert(`${this.timerName} 时间结束啦！`);
                         this.playAlarm();
+                        // 移除电池背景
+                        if (batteryBg) {
+                            batteryBg.remove();
+                        }
+                        this.element.classList.remove('battery-warning');
+                        clearInterval(this.timerInterval);
                     }
                 }, 1000);
             }
@@ -109,6 +133,12 @@ class Timer {
         if (this.isRunning) {
             clearInterval(this.timerInterval);
             this.isRunning = false;
+            // 移除电池背景和警告效果
+            const batteryBg = this.element.querySelector('.battery-background');
+            if (batteryBg) {
+                batteryBg.remove();
+            }
+            this.element.classList.remove('battery-warning');
         }
     }
 
@@ -120,6 +150,12 @@ class Timer {
         this.element.querySelector('.minutes').value = '0';
         this.element.querySelector('.seconds').value = '0';
         this.updateTimerDisplay();
+        // 移除电池背景和警告效果
+        const batteryBg = this.element.querySelector('.battery-background');
+        if (batteryBg) {
+            batteryBg.remove();
+        }
+        this.element.classList.remove('battery-warning');
     }
 
     updateTimerDisplay() {
@@ -133,7 +169,7 @@ class Timer {
 
     playAlarm() {
         const audio = new Audio('alarm.mp3');
-        audio.play();
+        // audio.play();
     }
 }
 
@@ -177,3 +213,95 @@ document.getElementById('sponsor-link').addEventListener('mouseover', function(e
         }
     });
 });
+
+// 背景动画
+// 初始化背景动画
+function initBackground() {
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // 设置 canvas 尺寸为窗口大小
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // 粒子类
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
+            this.life = Math.random() * 100 + 100;
+        }
+        
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.life--;
+            
+            if (this.life <= 0 || 
+                this.x < 0 || this.x > canvas.width || 
+                this.y < 0 || this.y > canvas.height) {
+                this.reset();
+            }
+        }
+        
+        draw() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            ctx.fillStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    // 创建粒子数组
+    const particles = Array(50).fill().map(() => new Particle());
+    
+    // 动画循环
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        // 绘制连接线
+        particles.forEach((p1, i) => {
+            particles.slice(i + 1).forEach(p2 => {
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    ctx.strokeStyle = theme === 'dark' 
+                        ? `rgba(255, 255, 255, ${0.2 * (1 - distance/100)})` 
+                        : `rgba(0, 0, 0, ${0.2 * (1 - distance/100)})`;
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                }
+            });
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+// 启动背景动画
+initBackground();

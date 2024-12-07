@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+     <!-- 添加 canvas 作为背景 -->
+     <canvas id="background-canvas"></canvas>
     <!-- 切换主题 -->
     <div class="theme-switch">
-        <button title="点击切换主题" onclick="toggleTheme()"> <p id="current-theme">浅色</p>   </button>
+        <button title="点击切换主题" onclick="toggleTheme()"> <p id="current-theme">浅</p></button>
        
     </div>
     <div id="create-timer-container">
         <h2>一款支持多定时器同时运行的计时器</h2>
-        <h3>支持倒计时、计时、秒表、番茄钟等多种计时模式</h3>
+        <h3>支持倒计时、秒表、番茄钟等多种计时模式</h3>
         <button id="create-timer" class="create-btn">创建新定时器</button>  
     </div>
     <div id="timers-container"></div> 
